@@ -90,10 +90,10 @@ module.exports = function (log, conf) {
   };
 
   FreightRoutes.track = function (req, res) {
-    if (req.body && req.body.repository && req.body.password && req.body.branch) {
+    if (req.body && req.body.repository &&  req.body.branch) {
       log.debug('Tracking request:', req.body);
 
-      if (! freightAuth.checkPassword(req.body.password)) {
+      if (req.body.password && ! freightAuth.checkPassword(req.body.password)) {
         log.debug('Password does not match');
         return res.send(403);
       }
