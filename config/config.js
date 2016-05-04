@@ -69,8 +69,8 @@ module.exports = function () {
       },
       host: {
         doc: 'Redis IP address to bind.',
-        format: 'ipaddress',
-        default: '127.0.0.1'
+        format: String,
+        default: 'redis'
       },
       auth: {
         doc: 'Redis Password.',
