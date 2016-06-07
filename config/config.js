@@ -6,12 +6,6 @@ var convict = require('convict');
 
 module.exports = function () {
 
-  // Check if we need to auto configure for a fast start.
-  var env = process.env.NODE_ENV || 'dev';
-  var configFile = process.env.FREIGHT_CONFIG || __dirname + '/' + env + '.json';
-
-  require('./autoconfig')(configFile);
-
   var conf = convict({
     env: {
       doc: 'The applicaton environment.',
@@ -46,20 +40,23 @@ module.exports = function () {
     password: {
       doc: 'The password that is used to create Freight bundles.',
       format: String,
-      default: ''
+      default: '',
+      env: 'PASSWORD'
     },
     storage: {
       // TODO: You need to create this directory if it does not exist.
       // This directory is also used as a static file directory for Freight bundles.
       doc: 'Default bundle storage directory. Make sure it is somewhere in the Freight Server directory.',
       format: String,
-      default: __dirname + '/../storage'
+      default: __dirname + '/../storage',
+      env: 'STORAGE_DIRECTORY'
     },
     tempDir: {
       // TODO: You need to create this directory if it does not exist.
       doc: 'Default directory for temporary files.',
       format: String,
-      default: __dirname + '/../temp'
+      default: __dirname + '/../temp',
+      env: 'TEMP_DIRECTORY'
     },
     // Redis config, see https://github.com/learnboost/kue#redis-connection-settings
     redis: {
@@ -80,25 +77,18 @@ module.exports = function () {
         format: String,
         default: '',
         env: 'REDIS_PASSWORD'
-      },
-      options: {
-        doc: 'Redis Options.',
-        format: Object,
-        default: {}
       }
     },
     track: {
       delay: {
         doc: 'Repository update check delay in milliseconds',
         format: 'nat',
-        default: 60 * 60000
+        default: 60 * 60000,
+        env: 'TRACK_DELAY'
       }
     }
   });
 
-  // load environment dependent configuration
-  // TODO: development only for now, change it later.
-  conf.loadFile(configFile);
   // perform configuration validation
   conf.validate();
 
