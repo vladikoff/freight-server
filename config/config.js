@@ -3,8 +3,12 @@
  * See https://github.com/mozilla/node-convict/blob/master/README.md for details.
  */
 var convict = require('convict');
+var fs = require('fs');
 
 module.exports = function () {
+
+  var env = process.env.NODE_ENV || 'dev';
+  var configFile = process.env.FREIGHT_CONFIG || __dirname + '/' + env + '.json';
 
   var conf = convict({
     env: {
@@ -41,7 +45,7 @@ module.exports = function () {
       doc: 'The password that is used to create Freight bundles.',
       format: String,
       default: '',
-      env: 'PASSWORD'
+      env: 'FREIGHT_PASSWORD'
     },
     storage: {
       // TODO: You need to create this directory if it does not exist.
@@ -77,6 +81,12 @@ module.exports = function () {
         format: String,
         default: '',
         env: 'REDIS_PASSWORD'
+      },
+      // TODO : see how we can extract redis options from env variables
+      options: {
+        doc: 'Redis Options.',
+        format: Object,
+        default: {}
       }
     },
     track: {
@@ -91,6 +101,11 @@ module.exports = function () {
 
   // perform configuration validation
   conf.validate();
+  // load environment dependent configuration
+  if (fs.existsSync(configFile)) {
+    // TODO: development only for now, change it later.
+    conf.loadFile(configFile);
+  }
 
   return conf;
 };
