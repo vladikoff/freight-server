@@ -99,13 +99,13 @@ module.exports = function () {
     }
   });
 
-  // perform configuration validation
-  conf.validate();
   // load environment dependent configuration
   if (fs.existsSync(configFile)) {
     // TODO: development only for now, change it later.
     conf.loadFile(configFile);
   }
+  // perform configuration validation
+  conf.validate();
 
   return conf;
 };
